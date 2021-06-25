@@ -41,7 +41,7 @@ function compile(input) {
     const GET_TOKEN_TYPE = function (val) {
         let current_token_data = {
             TOKEN: TOKENS[8],
-            VALUE: "",
+            CONTENT: "",
             NAME: ""
         }
 
@@ -58,23 +58,23 @@ function compile(input) {
         }
 
         //variable check
-        const VARIABLE_EXPRESION = new RegExp(`${TOKENS[1].KEYWORD} [a-z|A-Z]+[^\n|^a-z|^A-Z|^0-9]*=[^\n|^a-z|^A-Z|^0-9]*[\"a-z\"|\"A-Z\"|0-9\.]+`, "g")
+        const VARIABLE_EXPRESION = new RegExp(`${TOKENS[1].KEYWORD} [^\\n ]*[\\s]*=[\\s]*(\\".*\\"|[^\\s]*)[\\n $]`, "g")
         if (VARIABLE_EXPRESION.test(val)) {
             current_token_data.TOKEN = TOKENS[1]
-            current_token_data.VALUE = val.match(/=[\s]+[\"a-z\"|\"A-Z\"|0-9\.]+/)[0].replace("=", "").trim()
+            current_token_data.CONTENT = val.match(/=(.*)/g)[0].replace("=", "").trim()
 
-            const NAME_FILTER_EXPRESION = new RegExp(`${TOKENS[1].KEYWORD} [a-z|A-Z]+[^\n|^a-z|^A-Z|^0-9]*=`, "g")
+            const NAME_FILTER_EXPRESION = new RegExp(`${TOKENS[1].KEYWORD} [a-z|A-Z]+[^\\n|^a-z|^A-Z|^0-9]*=`, "g")
             current_token_data.NAME = val.match(NAME_FILTER_EXPRESION)[0].replace("=", "").replace(TOKENS[1].KEYWORD, "").trim()
             return current_token_data
         }
 
         //local variable check
-        const LOCAL_VARIABLE_EXPRESION = new RegExp(`${TOKENS[2].KEYWORD} [a-z|A-Z]+[^\n|^a-z|^A-Z|^0-9]*=[^\n|^a-z|^A-Z|^0-9]*[\"a-z\"|\"A-Z\"|0-9\.]+`, "g")
+        const LOCAL_VARIABLE_EXPRESION = new RegExp(`${TOKENS[2].KEYWORD} [^\\n ]*[\\s]*=[\\s]*(\\".*\\"|[^\\s]*)[\\n $]`, "g")
         if (LOCAL_VARIABLE_EXPRESION.test(val)) {
             current_token_data.TOKEN = TOKENS[2]
-            current_token_data.VALUE = val.match(/=[\s]+[\"a-z\"|\"A-Z\"|0-9\.]+/g)[0].replace("=", "").trim()
+            current_token_data.CONTENT = val.match(/=(.*)/g)[0].replace("=", "").trim()
 
-            const NAME_FILTER_EXPRESION = new RegExp(`${TOKENS[2].KEYWORD} [a-z|A-Z]+[^\n|^a-z|^A-Z|^0-9]*=`, "g")
+            const NAME_FILTER_EXPRESION = new RegExp(`${TOKENS[2].KEYWORD} (.*)=`, "g")
             current_token_data.NAME = val.match(NAME_FILTER_EXPRESION)[0].replace("=", "").replace(TOKENS[2].KEYWORD, "").trim()
             return current_token_data
         }
@@ -91,13 +91,15 @@ function compile(input) {
     }
 }
 
-function TestCompiler() {
-    var test = `
-        func main()
-            let kiader = 0
-            var iterationCount = 3.5f
-    `
-    compile(test)
-}
 
-TestCompiler()
+
+//MAIN - TEST
+var test = `
+func main()
+    let kiader = 0
+    var iterationCount = 3.5f
+
+func out()
+    let inputs = "Juan Carlos"
+    let inputs2 = "Pedro"`
+console.log(compile(test))
