@@ -1,0 +1,60 @@
+import boostrap from "boostra.ash";
+
+
+func main()
+    html document = new html()
+    if (GET["user"] != null)
+        document.add(h4("Logueado!, Bienvenido"))
+    else
+        document.add(panel())         
+
+    return document
+
+
+class panel extends from form
+    constructor(string titulo)
+        inline func obtenerID => rand("QWERTYUIOPASDFGHJKLÑZXCVBNM")
+        id = obtenerID();
+        
+        string usuarioID = obtenerID()
+        string contraseñaID = obtenerID()
+
+        multiple add:
+            h3(titulo)
+            label({for:usuarioID, placeholder:"Usuario", class:boostrap.form_input})
+            input({type:"text", name:"Usuario", id:usuarioID, placeholder:"Usuario", class:boostrap.form_input
+            label({for:contraseñaID, placeholder:"Usuario", class:"form-input"})
+            input({type:"password", name:"Contraseña", id:contraseñaID, placeholder:"Contraseña", class:boostrap.form_input
+            button({text:"value", class:boostrap.button, type:"submit"})
+        
+
+    override func onsubmit()
+        return login()
+
+
+    func sync login()
+        let urldest = "localhost:8080/auth.php"
+        bool correcto = false
+
+        javascript result = eval(
+            let output = 0;
+            var req = new XMLHttpRequest();
+            req.open('GET', %{urldest}%, true);
+            req.onreadystatechange = function (aEvt) {
+              if (req.readyState == 4) {
+                 if(req.status == 200)
+                  ash("last-response", req.responseText)
+                 else
+                  ash("last-response", false)
+              }
+            };
+            req.send(null); 
+        )
+        result.execute(true)
+        if (ash["last-response"] != false)
+            eval(
+                let user = json_decode(ash["last-response"])["user"];
+                window.location.href = `localhost:8080?${user}` 
+            ).execute()
+        
+        

@@ -1,0 +1,14 @@
+{
+  "name": "mabel-script",
+  "version": "1.0.0",
+  "description": "Mabel Script is a programing languague compiled to HTML and JS ",
+  "main": "app.js",
+  "scripts": {
+    "test": "run-test"
+  },
+  "keywords": [
+    "MabelScript"
+  ],
+  "author": "",
+  "license": "ISC"
+}
